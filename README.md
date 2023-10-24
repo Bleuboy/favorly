@@ -1,4 +1,4 @@
-# favorly
+# Favorly
 
 ## Overview
 
