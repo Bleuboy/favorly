@@ -1,0 +1,96 @@
+module SimpleCurrency where
+
+-- Define the Currency type with two possible values: 0 and 1.
+data Currency = Zero | One
+  deriving (Show, Eq)
+
+-- Initialize a currency account with an initial balance of 0.
+initAccount :: Currency
+initAccount = Zero
+
+-- Function to give 1 coin for a favor.
+giveCoin :: Currency -> Currency
+giveCoin Zero = One
+giveCoin One = One  -- Maximum balance of 1.
+
+-- Function to pay 1 coin.
+payCoin :: Currency -> Currency
+payCoin Zero = Zero
+payCoin One = Zero
+
+-- Function to check the balance of the account.
+checkBalance :: Currency -> Int
+checkBalance Zero = 0
+checkBalance One = 1
+
+-- Function to perform a transaction, either giving or paying a coin based on a boolean flag.
+performTransaction :: Currency -> Bool -> Currency
+performTransaction balance favorDone
+  | favorDone = giveCoin balance
+  | otherwise = payCoin balance
+
+main :: IO ()
+main = do
+  let initialBalance = initAccount
+  let afterFavor = performTransaction initialBalance True
+  let afterPayment = performTransaction afterFavor False
+
+  putStrLn "Initial Balance: " ++ show (checkBalance initialBalance)
+  putStrLn "Balance after favor: " ++ show (checkBalance afterFavor)
+  putStrLn "Balance after payment: " ++ show (checkBalance afterPayment)
+module SimpleCurrency where
+
+-- Define the Currency type with two possible values: 0 and 1.
+data Currency = Zero | One
+  deriving (Show, Eq)
+
+-- Initialize a currency account with an initial balance of 0.
+initAccount :: Currency
+initAccount = Zero
+
+-- Function to give 1 coin for a favor.
+giveCoin :: Currency -> Currency
+giveCoin Zero = One
+giveCoin One = One  -- Maximum balance of 1.
+
+-- Function to pay 1 coin.
+payCoin :: Currency -> Currency
+payCoin Zero = Zero
+payCoin One = Zero
+
+-- Function to check the balance of the account.
+checkBalance :: Currency -> Int
+checkBalance Zero = 0
+checkBalance One = 1
+
+-- Function to perform a transaction, either giving or paying a coin based on a boolean flag.
+performTransaction :: Currency -> Bool -> Currency
+performTransaction balance favorDone
+  | favorDone = giveCoin balance
+  | otherwise = payCoin balance
+
+-- Function to determine if a transaction is possible based on the account balance.
+isTransactionPossible :: Currency -> Bool -> Bool
+isTransactionPossible balance favorDone
+  | favorDone && balance == Zero = True
+  | not favorDone && balance == One = True
+  | otherwise = False
+
+-- Function to describe the account balance in a friendly way.
+describeBalance :: Currency -> String
+describeBalance Zero = "You have no coins."
+describeBalance One = "You have one coin."
+
+main :: IO ()
+main = do
+  let initialBalance = initAccount
+  let afterFavor = performTransaction initialBalance True
+  let afterPayment = performTransaction afterFavor False
+
+  putStrLn "Initial Balance: " ++ describeBalance initialBalance
+  putStrLn "Balance after favor: " ++ describeBalance afterFavor
+  putStrLn "Balance after payment: " ++ describeBalance afterPayment
+
+  -- Check if further transactions are possible
+  putStrLn "Can you give another coin for a favor? " ++ show (isTransactionPossible afterPayment True)
+  putStrLn "Can you make a payment? " ++ show (isTransactionPossible afterPayment False)
