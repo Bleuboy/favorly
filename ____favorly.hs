@@ -1,10 +1,25 @@
--- define a data type for user with a name and credits
+module Favorly where
+
+import Control.Concurrent.STM
+import System.IO.Unsafe
+
+-- Define a data type for User with a name and credits
 data User = User { 
-    name :: String,    -- the user's name
-    credits :: Int     -- the number of credits the user has
+    name :: String,    -- The user's name
+    credits :: Int     -- The number of credits the user has
 } deriving (Show)
 
--- function to perform a favor to multiple users
+-- Define a list of example users
+allUsersRef :: IORef [User]
+allUsersRef = unsafePerformIO $ newIORef [User "Alice" 5, User "Bob" 5, User "Charlie" 5]
+
+allUsers :: [User]
+allUsers = unsafePerformIO $ readIORef allUsersRef
+
+findUser :: String -> [User] -> User
+findUser name users = head $ filter (\u -> name == name u) users
+
+-- Function to perform a favor to multiple users
 performFavor :: User -> [User] -> Int -> Either String ([User], User)
 performFavor giver receivers numCredits
     | numCredits <= 0 = Left "invalid favor value. favor value must be positive."
@@ -22,7 +37,7 @@ performFavor giver receivers numCredits
         in 
             Right (updatedReceivers, newGiver)
 
--- function to transfer credits from one user to multiple users
+-- Function to transfer credits from one user to multiple users
 transferCredits :: User -> [User] -> Int -> Either String ([User], User)
 transferCredits giver receivers numCredits
     | numCredits <= 0 = Left "invalid favor value. favor value must be positive."
